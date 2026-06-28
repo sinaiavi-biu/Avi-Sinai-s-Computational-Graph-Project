@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant Browser
+    participant Publish as TopicDisplayer/BulkTopicDisplayer
+    participant Manager as TopicManager
+    participant Source as Source Topic
+    participant Worker as ParallelAgent
+    participant Agent
+    participant Output as Output Topic
+
+    Browser->>Publish: publish topic values
+    Publish->>Manager: getTopic(source)
+    Publish->>Source: publish(Message)
+    Source->>Worker: callback(topic, message)
+    Worker->>Worker: enqueue CallbackRequest
+    Worker->>Agent: worker thread invokes callback
+    Agent->>Output: publish(computed Message)
+    Output-->>Manager: stores latest message
+    Publish-->>Browser: topic table and refresh script

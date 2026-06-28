@@ -1,0 +1,18 @@
+flowchart TD
+    A[Config text or uploaded file] --> B[ConfLoader.deploy]
+    B --> C[Close current GenericConfig]
+    C --> D{Full replacement?}
+    D -- yes --> E[Clear TopicManager]
+    D -- no --> F[Keep existing topics]
+    E --> G[Write config_files/uploaded.conf]
+    F --> G
+    G --> H[GenericConfig.create]
+    H --> I[Read non-empty trimmed lines]
+    I --> J{Line count divisible by 3?}
+    J -- no --> X[Reject config]
+    J -- yes --> K[Validate unique publishers]
+    K --> L[Load class by reflection]
+    L --> M[Call String[], String[] constructor]
+    M --> N[Wrap in ParallelAgent]
+    N --> O[Move registrations to wrapper]
+    O --> P[Active graph ready]

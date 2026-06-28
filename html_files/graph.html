@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Avi Sinai's Runtime Graph</title>
+    <style>
+        :root {
+            --text: #172033;
+            --muted: #68758a;
+            --canvas: #f7f9fc;
+            --line: #cfd6e3;
+            --topic-fill: #d9f0ff;
+            --topic-stroke: #2563eb;
+            --agent-fill: #ffe3c2;
+            --agent-stroke: #b45309;
+            --edge: #334155;
+            --soft: #eef7f6;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background:
+                linear-gradient(135deg, rgba(239, 246, 255, 0.95), rgba(247, 249, 252, 0.92) 52%, rgba(255, 247, 237, 0.88)),
+                linear-gradient(90deg, rgba(23, 32, 51, 0.04) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(23, 32, 51, 0.04) 1px, transparent 1px);
+            background-size: auto, 40px 40px, 40px 40px;
+            color: var(--text);
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 0;
+        }
+
+        .legend {
+            display: flex;
+            gap: 12px;
+            color: var(--muted);
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .swatch {
+            width: 18px;
+            height: 12px;
+            border: 2px solid var(--topic-stroke);
+            background: var(--topic-fill);
+        }
+
+        .swatch.agent-swatch {
+            border-color: var(--agent-stroke);
+            background: var(--agent-fill);
+            border-radius: 999px;
+        }
+
+        svg {
+            width: 100%;
+            min-height: 560px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background:
+                linear-gradient(90deg, rgba(37, 99, 235, 0.06) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(37, 99, 235, 0.06) 1px, transparent 1px),
+                var(--canvas);
+            background-size: 32px 32px, 32px 32px, auto;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82);
+        }
+
+        .topic {
+            fill: var(--topic-fill);
+            stroke: var(--topic-stroke);
+            stroke-width: 2;
+        }
+
+        .agent {
+            fill: var(--agent-fill);
+            stroke: var(--agent-stroke);
+            stroke-width: 2;
+        }
+
+        .gate {
+            fill: #fff3bf;
+        }
+
+        .gate-extra {
+            fill: none;
+            stroke: var(--agent-stroke);
+            stroke-width: 2;
+        }
+
+        .gate-bubble {
+            fill: var(--canvas);
+            stroke: var(--agent-stroke);
+            stroke-width: 2;
+        }
+
+        .edge {
+            stroke: var(--edge);
+            stroke-width: 2.4;
+            fill: none;
+            marker-end: url(#arrow);
+        }
+
+        .edge.cycle {
+            stroke-dasharray: 7 5;
+        }
+
+        .edge.routed {
+            stroke-dasharray: 1 0;
+        }
+
+        .node-label {
+            font-size: 13px;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            fill: var(--text);
+            font-weight: 700;
+        }
+
+        .gate-label {
+            font-size: 12px;
+            letter-spacing: .06em;
+        }
+
+        .node-sublabel {
+            font-size: 11px;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            fill: var(--muted);
+            font-weight: 700;
+        }
+
+        .caption {
+            fill: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .edge-label-bg {
+            fill: #ffffff;
+            stroke: #c8d0d8;
+            stroke-width: 1;
+            opacity: 0.94;
+        }
+
+        .edge-label {
+            fill: #334155;
+            font-size: 12px;
+            font-weight: 800;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <h1>Runtime Graph</h1>
+        <div class="legend">
+            <span><i class="swatch"></i>Topic</span>
+            <span><i class="swatch agent-swatch"></i>Agent</span>
+        </div>
+    </div>
+    {{GRAPH}}
+</body>
+</html>

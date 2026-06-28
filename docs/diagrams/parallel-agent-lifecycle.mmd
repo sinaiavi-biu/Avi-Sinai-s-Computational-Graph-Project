@@ -1,0 +1,15 @@
+stateDiagram-v2
+    [*] --> Constructed
+    Constructed --> Running: start worker thread
+    Running --> Queued: callback(topic, msg)
+    Queued --> Running: worker drains request
+    Running --> Closing: close()
+    Closing --> ShutdownQueued: enqueue shutdown request
+    ShutdownQueued --> Joined: worker exits and join returns
+    Joined --> DelegateClosed: wrapped agent.close()
+    DelegateClosed --> [*]
+
+    note right of Running
+      One worker thread serializes callbacks
+      for the wrapped concrete agent.
+    end note

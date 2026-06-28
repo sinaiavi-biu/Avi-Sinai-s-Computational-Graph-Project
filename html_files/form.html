@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Controls</title>
+    <style>
+        :root {
+            --text: #172033;
+            --muted: #68758a;
+            --line: #cfd6e3;
+            --accent: #0f766e;
+            --accent-dark: #0b5f59;
+            --field: #f7f9fc;
+            --soft: #eef7f6;
+            --warm: #fff7ed;
+            --blue-soft: #eff6ff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: var(--text);
+            background:
+                linear-gradient(135deg, rgba(239, 246, 255, 0.95), rgba(238, 247, 246, 0.86) 50%, rgba(255, 247, 237, 0.92)),
+                linear-gradient(90deg, rgba(23, 32, 51, 0.04) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(23, 32, 51, 0.04) 1px, transparent 1px);
+            background-size: auto, 36px 36px, 36px 36px;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 0;
+        }
+
+        .section {
+            padding-bottom: 26px;
+            margin-bottom: 26px;
+            border-bottom: 1px solid #e3e8f0;
+            border-left: 4px solid rgba(15, 118, 110, 0.34);
+            padding-left: 14px;
+        }
+
+        .section:last-child {
+            border-bottom: 0;
+        }
+
+        form {
+            margin-top: 16px;
+        }
+
+        label {
+            display: block;
+            margin: 14px 0 6px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        input, button, select {
+            width: 100%;
+            min-height: 42px;
+            padding: 9px 10px;
+            font-size: 15px;
+            border: 1px solid var(--line);
+            background: var(--field);
+            color: var(--text);
+            border-radius: 6px;
+        }
+
+        input[type="file"] {
+            padding: 8px;
+            background: #ffffff;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            resize: vertical;
+            padding: 10px;
+            font-family: Consolas, monospace;
+            font-size: 13px;
+            border: 1px solid var(--line);
+            background: var(--field);
+            color: var(--text);
+            border-radius: 6px;
+        }
+
+        button {
+            margin-top: 16px;
+            border: 0;
+            background: var(--accent);
+            color: white;
+            cursor: pointer;
+            font-weight: 800;
+            letter-spacing: 0;
+            border-radius: 6px;
+        }
+
+        button:hover {
+            background: var(--accent-dark);
+        }
+
+        button.secondary {
+            margin-top: 10px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.86);
+            color: var(--accent-dark);
+        }
+
+        button.secondary:hover {
+            background: var(--soft);
+        }
+
+        .hint {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.35;
+        }
+
+        .topic-list {
+            margin-top: 14px;
+        }
+
+        .topic-row {
+            display: grid;
+            grid-template-columns: 72px 1fr;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .topic-row strong {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .grid-two {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .tool-panel {
+            margin-top: 12px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <section class="section">
+        <h2>Initialize Config</h2>
+        <label for="initMode">Source</label>
+        <select id="initMode">
+            <option value="file">Config file</option>
+            <option value="text">Write config text</option>
+        </select>
+        <form id="fileConfigPanel" class="tool-panel" action="http://localhost:8080/upload" method="post" enctype="multipart/form-data" target="center">
+            <label for="conf">Config file</label>
+            <input id="conf" name="conf" type="file">
+            <button type="submit">deploy</button>
+        </form>
+        <form id="textConfigPanel" class="tool-panel hidden" action="http://localhost:8080/create-config" method="post" target="center">
+            <label for="confText">Create config</label>
+            <textarea id="confText" name="confText" spellcheck="false">configs.PlusAgent
+A,B
+C</textarea>
+            <button type="submit">deploy text config</button>
+        </form>
+    </section>
+
+    <section class="section">
+        <h2>Modify Graph</h2>
+        <p class="hint">Add an agent to a new or existing graph, or remove existing graph parts when they exist.</p>
+        <label for="editMode">Action</label>
+        <select id="editMode">
+            <option value="prebuilt">Add prebuilt agent</option>
+            <option value="raw">Add raw agent block</option>
+            <option value="addEdge" class="requires-edge">Add edge</option>
+            <option value="removeTopic" class="requires-graph">Remove topic</option>
+            <option value="removeAgent" class="requires-edge">Remove agent</option>
+            <option value="removeEdge" class="requires-edge">Remove edge</option>
+        </select>
+
+        <form id="rawAgentPanel" class="tool-panel hidden" action="http://localhost:8080/append-config" method="post" target="center">
+            <label for="appendConfText">Agent block</label>
+            <textarea id="appendConfText" name="appendConfText" spellcheck="false">configs.IncAgent
+C
+D</textarea>
+            <button type="submit">add agents</button>
+        </form>
+
+        <form id="agentBuilder" class="tool-panel" action="http://localhost:8080/append-config" method="post" target="center">
+            <label for="agentType">Prebuilt agent</label>
+            <select id="agentType">
+                <optgroup label="Math">
+                    <option value="configs.PlusAgent" data-min-inputs="2" data-variable="true">PLUS</option>
+                    <option value="configs.IncAgent" data-min-inputs="1" data-variable="false">INC</option>
+                    <option value="configs.SubAgent" data-min-inputs="2" data-variable="true">SUB</option>
+                    <option value="configs.MulAgent" data-min-inputs="2" data-variable="true">MUL</option>
+                    <option value="configs.DivAgent" data-min-inputs="2" data-variable="true">DIV</option>
+                    <option value="configs.ModAgent" data-min-inputs="2" data-variable="true">MOD</option>
+                    <option value="configs.PowAgent" data-min-inputs="2" data-variable="true">POW</option>
+                    <option value="configs.MinAgent" data-min-inputs="2" data-variable="true">MIN</option>
+                    <option value="configs.MaxAgent" data-min-inputs="2" data-variable="true">MAX</option>
+                    <option value="configs.AvgAgent" data-min-inputs="2" data-variable="true">AVG</option>
+                </optgroup>
+                <optgroup label="Boolean">
+                    <option value="configs.AndAgent" data-min-inputs="2" data-variable="true">AND</option>
+                    <option value="configs.OrAgent" data-min-inputs="2" data-variable="true">OR</option>
+                    <option value="configs.XorAgent" data-min-inputs="2" data-variable="true">XOR</option>
+                    <option value="configs.NandAgent" data-min-inputs="2" data-variable="true">NAND</option>
+                    <option value="configs.NorAgent" data-min-inputs="2" data-variable="true">NOR</option>
+                    <option value="configs.XnorAgent" data-min-inputs="2" data-variable="true">XNOR</option>
+                    <option value="configs.MajorityAgent" data-min-inputs="2" data-variable="true">MAJORITY</option>
+                    <option value="configs.NotAgent" data-min-inputs="1" data-variable="false">NOT</option>
+                    <option value="configs.BufAgent" data-min-inputs="1" data-variable="false">BUF</option>
+                </optgroup>
+            </select>
+            <div id="agentInputs" class="grid-two"></div>
+            <button id="addAgentInput" class="secondary" type="button">add input</button>
+            <label for="agentOut">Output topics</label>
+            <input id="agentOut" type="text" autocomplete="off" placeholder="OUT or OUT1,OUT2">
+            <input id="builtAgentText" name="appendConfText" type="hidden">
+            <button type="submit">add prebuilt agent</button>
+        </form>
+
+        <form id="removeTopicPanel" class="tool-panel hidden" action="http://localhost:8080/edit-config" method="post" target="center">
+            <input type="hidden" name="action" value="removeTopic">
+            <label for="removeTopic">Remove topic node</label>
+            <input id="removeTopic" name="topic" type="text" autocomplete="off" placeholder="K">
+            <button type="submit">remove topic</button>
+        </form>
+        <form id="addEdgePanel" class="tool-panel hidden" action="http://localhost:8080/edit-config" method="post" target="center">
+            <input type="hidden" name="action" value="addEdge">
+            <label for="addFrom">Add edge from</label>
+            <input id="addFrom" name="from" type="text" autocomplete="off" placeholder="A or A+B=SUM1">
+            <label for="addTo">Add edge to</label>
+            <input id="addTo" name="to" type="text" autocomplete="off" placeholder="A+B=SUM1 or SUM1">
+            <button type="submit">add edge</button>
+        </form>
+        <form id="removeAgentPanel" class="tool-panel hidden" action="http://localhost:8080/edit-config" method="post" target="center">
+            <input type="hidden" name="action" value="removeAgent">
+            <label for="removeAgent">Remove agent node</label>
+            <input id="removeAgent" name="agent" type="text" autocomplete="off" placeholder="A+B=SUM1">
+            <button type="submit">remove agent</button>
+        </form>
+        <form id="removeEdgePanel" class="tool-panel hidden" action="http://localhost:8080/edit-config" method="post" target="center">
+            <input type="hidden" name="action" value="removeEdge">
+            <label for="removeFrom">Remove edge from</label>
+            <input id="removeFrom" name="from" type="text" autocomplete="off" placeholder="A or A+B=SUM1">
+            <label for="removeTo">Remove edge to</label>
+            <input id="removeTo" name="to" type="text" autocomplete="off" placeholder="A+B=SUM1 or SUM1">
+            <button type="submit">remove edge</button>
+        </form>
+
+        <form id="resetGraphPanel" class="tool-panel" action="http://localhost:8080/reset-config" method="post" target="center">
+            <button class="secondary" type="submit">reset graph</button>
+        </form>
+    </section>
+
+    <section class="section">
+        <h2>Publish</h2>
+        <p class="hint">Fill any topics you want and submit them together. Blank fields are ignored.</p>
+        <div id="topic-publisher" class="topic-list">Loading topics...</div>
+    </section>
+
+    <script>
+        const initMode = document.getElementById('initMode');
+        const fileConfigPanel = document.getElementById('fileConfigPanel');
+        const textConfigPanel = document.getElementById('textConfigPanel');
+        const editMode = document.getElementById('editMode');
+        const editPanels = {
+            prebuilt: document.getElementById('agentBuilder'),
+            raw: document.getElementById('rawAgentPanel'),
+            addEdge: document.getElementById('addEdgePanel'),
+            removeTopic: document.getElementById('removeTopicPanel'),
+            removeAgent: document.getElementById('removeAgentPanel'),
+            removeEdge: document.getElementById('removeEdgePanel')
+        };
+
+        function updateInitMode() {
+            fileConfigPanel.classList.toggle('hidden', initMode.value !== 'file');
+            textConfigPanel.classList.toggle('hidden', initMode.value !== 'text');
+        }
+
+        function updateEditMode() {
+            Object.keys(editPanels).forEach(key => {
+                editPanels[key].classList.toggle('hidden', editMode.value !== key);
+            });
+        }
+
+        async function refreshGraphTools() {
+            try {
+                const response = await fetch('/graph', { cache: 'no-store' });
+                const html = await response.text();
+                const match = html.match(/(\d+)\s+nodes,\s+(\d+)\s+edges/);
+                const nodes = match ? Number(match[1]) : 0;
+                const edges = match ? Number(match[2]) : 0;
+                Array.from(editMode.options).forEach(option => {
+                    if (option.classList.contains('requires-graph')) {
+                        option.disabled = nodes === 0;
+                    }
+                    if (option.classList.contains('requires-edge')) {
+                        option.disabled = edges === 0;
+                    }
+                });
+                if (editMode.selectedOptions[0]?.disabled) {
+                    editMode.value = 'prebuilt';
+                }
+                updateEditMode();
+            } catch (error) {
+                Array.from(editMode.options).forEach(option => {
+                    option.disabled = option.classList.contains('requires-graph') || option.classList.contains('requires-edge');
+                });
+                editMode.value = 'prebuilt';
+                updateEditMode();
+            }
+        }
+
+        initMode.addEventListener('change', updateInitMode);
+        editMode.addEventListener('change', updateEditMode);
+        updateInitMode();
+        updateEditMode();
+        refreshGraphTools();
+
+        async function refreshTopicPublisher() {
+            const holder = document.getElementById('topic-publisher');
+            const previousSignature = holder.querySelector('form')?.dataset.signature || '';
+            const hasDraftValues = Array.from(holder.querySelectorAll('input[type="text"]'))
+                .some(input => input.value.length > 0);
+            try {
+                const response = await fetch('/topic-form', { cache: 'no-store' });
+                const html = await response.text();
+                const template = document.createElement('template');
+                template.innerHTML = html.trim();
+                const nextSignature = template.content.querySelector('form')?.dataset.signature || '';
+                if (nextSignature !== previousSignature || (!holder.contains(document.activeElement) && !hasDraftValues)) {
+                    holder.innerHTML = html;
+                }
+            } catch (error) {
+                holder.textContent = 'Topic list unavailable.';
+            }
+        }
+
+        refreshTopicPublisher();
+        window.addEventListener('message', function(event) {
+            if (event.data === 'refresh-topic-form') {
+                refreshTopicPublisher();
+                refreshGraphTools();
+            }
+        });
+
+        const agentType = document.getElementById('agentType');
+        const agentInputs = document.getElementById('agentInputs');
+        const addAgentInput = document.getElementById('addAgentInput');
+        let agentInputCount = 0;
+
+        function selectedMinInputs() {
+            return Number(agentType.selectedOptions[0]?.dataset.minInputs || 2);
+        }
+
+        function selectedVariable() {
+            return agentType.selectedOptions[0]?.dataset.variable === 'true';
+        }
+
+        function renderAgentInputs(count) {
+            const previous = {};
+            agentInputs.querySelectorAll('input').forEach(input => previous[input.id] = input.value);
+            agentInputs.innerHTML = '';
+            agentInputCount = Math.max(count, selectedMinInputs());
+            for (let i = 1; i <= agentInputCount; i++) {
+                const wrap = document.createElement('div');
+                const label = document.createElement('label');
+                const input = document.createElement('input');
+                label.htmlFor = 'agentInput' + i;
+                label.textContent = 'Input ' + i;
+                input.id = 'agentInput' + i;
+                input.type = 'text';
+                input.autocomplete = 'off';
+                input.placeholder = String.fromCharCode(64 + Math.min(i, 26));
+                input.value = previous[input.id] || '';
+                wrap.appendChild(label);
+                wrap.appendChild(input);
+                agentInputs.appendChild(wrap);
+            }
+            addAgentInput.classList.toggle('hidden', !selectedVariable());
+        }
+
+        function updateAgentFields() {
+            renderAgentInputs(selectedMinInputs());
+        }
+
+        agentType.addEventListener('change', updateAgentFields);
+        addAgentInput.addEventListener('click', function() {
+            renderAgentInputs(agentInputCount + 1);
+        });
+        updateAgentFields();
+
+        document.getElementById('agentBuilder').addEventListener('submit', function(event) {
+            const built = document.getElementById('builtAgentText');
+            const inputValues = [];
+            for (let i = 1; i <= agentInputCount; i++) {
+                inputValues.push(document.getElementById('agentInput' + i).value.trim());
+            }
+            const output = document.getElementById('agentOut').value.trim();
+            built.value = [agentType.value, inputValues.join(','), output].join('\n');
+            if (built.value.split('\n').some(line => line.trim().length === 0)) {
+                event.preventDefault();
+                alert('Fill all agent parameters before adding it.');
+            }
+        });
+    </script>
+</body>
+</html>

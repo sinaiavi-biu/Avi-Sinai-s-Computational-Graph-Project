@@ -1,0 +1,11 @@
+graph LR
+    A[Topic A] --> Plus[A+B=C]
+    B[Topic B] --> Plus
+    Plus --> C[Topic C]
+    C --> Inc[C+1=D]
+    Inc --> D[Topic D]
+
+    classDef topic fill:#d8eff7,stroke:#1f6f8b,color:#102a43
+    classDef agent fill:#f8dfbd,stroke:#9a6214,color:#102a43
+    class A,B,C,D topic
+    class Plus,Inc agent

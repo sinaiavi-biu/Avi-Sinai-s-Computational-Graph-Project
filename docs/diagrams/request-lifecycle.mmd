@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant Browser
+    participant Server as MyHTTPServer
+    participant Parser as RequestParser
+    participant Servlet
+    participant State as Config/Topics/View
+
+    Browser->>Server: HTTP request
+    Server->>Parser: parseRequest(reader)
+    Parser-->>Server: RequestInfo
+    Server->>Server: find longest URI prefix for method
+    Server->>Servlet: handle(RequestInfo, OutputStream)
+    Servlet->>State: read or mutate runtime state
+    State-->>Servlet: result HTML or notice
+    Servlet-->>Browser: HTTP response

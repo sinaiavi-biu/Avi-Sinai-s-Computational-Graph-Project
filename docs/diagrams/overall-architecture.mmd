@@ -1,0 +1,17 @@
+graph LR
+    Browser[Browser UI] --> HTTPServer[MyHTTPServer]
+    HTTPServer --> RequestParser[RequestParser]
+    HTTPServer --> Servlets[Servlet handlers]
+    Servlets --> ConfLoader[ConfLoader]
+    Servlets --> TopicManager[TopicManagerSingleton]
+    Servlets --> GraphDisplayer[GraphDisplayer]
+    ConfLoader --> GenericConfig[GenericConfig]
+    GenericConfig --> Agents[Concrete Agents]
+    GenericConfig --> ParallelAgents[ParallelAgent workers]
+    TopicManager --> Topics[Topics]
+    Topics --> ParallelAgents
+    ParallelAgents --> Agents
+    Agents --> Topics
+    GraphDisplayer --> Graph[Graph model]
+    Graph --> HtmlGraphWriter[HtmlGraphWriter]
+    HtmlGraphWriter --> Browser

@@ -1,0 +1,17 @@
+graph TD
+    Main --> server
+    Main --> servlets
+    servlets --> server
+    servlets --> graph
+    servlets --> configs
+    servlets --> views
+    views --> graph
+    configs --> graph
+    tests --> server
+    tests --> servlets
+    tests --> configs
+    tests --> graph
+    tests --> views
+
+    html_files[html_files] -. served by .-> servlets
+    config_files[config_files] -. read/write .-> configs
