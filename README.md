@@ -8,6 +8,22 @@ Built with Java 21, sockets, threads, reflection, HTML, CSS, JavaScript, and gen
 
 ---
 
+## Demo
+
+[Watch the demo video](docs/images/demo.mp4)
+
+![Main UI](docs/images/main-ui.png)
+
+![Uploaded math graph](docs/images/math-graph.png)
+
+![Boolean graph](docs/images/boolean-graph.png)
+
+![Topic table after publishing values](docs/images/topic-table.png)
+
+![Config and edit panel](docs/images/config-editor.png)
+
+---
+
 ## Features
 
 - [x] Custom multithreaded HTTP server
