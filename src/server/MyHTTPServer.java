@@ -17,6 +17,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Socket-based implementation of {@link HTTPServer}.
+ *
+ * <p>The server owns one accept thread and a fixed-size worker pool. Each
+ * accepted client is parsed by {@link RequestParser}, then dispatched to the
+ * registered servlet with the longest matching URI prefix for the request
+ * method.</p>
+ *
+ * <p>Servlets are expected to write a complete HTTP response to the provided
+ * output stream.</p>
+ */
 public class MyHTTPServer extends Thread implements HTTPServer {
     private final int port;
     private final ExecutorService pool;
@@ -26,6 +37,13 @@ public class MyHTTPServer extends Thread implements HTTPServer {
     private volatile boolean running;
     private ServerSocket serverSocket;
 
+    /**
+     * Creates a server bound to the given port.
+     *
+     * @param port TCP port to listen on
+     * @param nThreads number of request worker threads
+     * @throws IllegalArgumentException if {@code nThreads} is not positive
+     */
     public MyHTTPServer(int port, int nThreads) {
         if (nThreads <= 0) {
             throw new IllegalArgumentException("nThreads must be positive");

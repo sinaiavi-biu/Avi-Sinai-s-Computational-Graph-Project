@@ -8,6 +8,14 @@ Built with Java 21, sockets, threads, reflection, HTML, CSS, JavaScript, and gen
 
 ---
 
+## Background
+
+The project models computations as a live directed graph. Topics carry values, agents subscribe to input topics, and agents publish computed values to output topics. This makes the runtime useful for arithmetic pipelines, Boolean circuits, fan-in/fan-out graphs, and cyclic graph visualization.
+
+The browser console exposes the full workflow: deploy a configuration, publish values, inspect topic state, edit graph structure, and view the resulting graph as SVG.
+
+---
+
 ## Demo
 
 [Watch the demo video](docs/images/demo.mp4)
@@ -48,6 +56,23 @@ Built with Java 21, sockets, threads, reflection, HTML, CSS, JavaScript, and gen
 - [x] Browser-based three-panel UI
 - [x] Bounded `ParallelAgent` shutdown under full queues
 - [x] Integration-style edge-case test suite
+
+---
+
+## Installation
+
+Requirements:
+
+- Java 21 or newer
+- PowerShell on Windows for the helper scripts
+- No external Java libraries are required
+
+Clone the repository:
+
+```powershell
+git clone https://github.com/sinaiavi-biu/Avi-Sinai-s-Computational-Graph-Project.git
+cd Avi-Sinai-s-Computational-Graph-Project
+```
 
 ---
 
@@ -140,9 +165,12 @@ sequenceDiagram
 
 ```text
 assignment6-project/
+  LICENSE                    # MIT license
   README.md                  # Human-facing project overview
   docs/
+    api/                     # Generated Javadoc for the reusable HTTP API
     diagrams/                # Editable Mermaid architecture diagrams
+    images/                  # Demo video and screenshots
   config_files/
     README.md                # Fixture descriptions
     *.conf                   # Valid and invalid sample graph configs
@@ -159,6 +187,11 @@ assignment6-project/
     servlets/                # Route handlers for UI, config, graph, and topics
     tests/                   # Integration and edge-case tests
     views/                   # HTML/SVG graph rendering
+  scripts/
+    compile.ps1              # Compile all sources and tests
+    run.ps1                  # Compile and start the browser console
+    test.ps1                 # Compile and run the integration test suite
+    javadoc.ps1              # Generate HTTP server API documentation
 ```
 
 Package responsibilities:
@@ -168,6 +201,7 @@ Package responsibilities:
 - `server`: socket accept loop, request parsing, and route lookup.
 - `servlets`: browser-facing HTTP behavior.
 - `views`: visual representation of the current graph.
+- `tests`: integration and edge-case test coverage.
 
 ---
 
@@ -192,6 +226,18 @@ Package responsibilities:
 ### Template Rendering
 
 `HtmlGraphWriter` generates SVG and injects it into `html_files/graph.html`. This keeps the graph algorithm in Java while allowing the page chrome and CSS to remain editable HTML.
+
+---
+
+## Design And SOLID Notes
+
+- Single Responsibility: `MyHTTPServer` owns socket accept/dispatch, `RequestParser` parses requests, servlets handle browser behavior, and `HtmlGraphWriter` renders graphs.
+- Open/Closed: new computational agents can be added as new classes without changing `GenericConfig`, as long as they implement `Agent` and expose the required constructor.
+- Liskov Substitution: concrete agents and `ParallelAgent` all implement `Agent`, so topics can notify either direct agents or wrapped agents through the same interface.
+- Interface Segregation: `Agent`, `Config`, `Servlet`, and `HTTPServer` are small interfaces focused on their specific roles.
+- Dependency Inversion: config loading depends on the `Agent` abstraction, and the server depends on the `Servlet` abstraction rather than concrete route handlers.
+
+Additional design work beyond the minimum includes Boolean agent families, variable-input agents, multi-output agents, duplicate publisher validation, legal edge editing, reset flow, cycle-aware graph layout, branded browser UI, and bounded `ParallelAgent` shutdown.
 
 ---
 
@@ -277,7 +323,15 @@ The project uses a small servlet-style router over a custom socket server:
 
 ## Build, Run, Test
 
-Compile:
+Using helper scripts:
+
+```powershell
+.\scripts\compile.ps1
+.\scripts\run.ps1
+.\scripts\test.ps1
+```
+
+Compile manually:
 
 ```powershell
 javac -d out src\graph\*.java src\configs\*.java src\server\*.java src\servlets\*.java src\views\*.java src\Main.java src\tests\Assignment6EdgeCaseTest.java
@@ -311,6 +365,37 @@ RESULT: PASSED 53 / 53 checks.
 
 ---
 
+## Javadoc
+
+The reusable custom HTTP server API is documented with Javadocs.
+
+Generate the documentation:
+
+```powershell
+.\scripts\javadoc.ps1
+```
+
+Open:
+
+```text
+docs/api/index.html
+```
+
+The documented API covers:
+
+- `server.HTTPServer`
+- `server.MyHTTPServer`
+- `server.RequestParser`
+- `servlets.Servlet`
+
+---
+
+## Learning Summary
+
+This project brought together networking, threading, reflection, graph modeling, browser rendering, and lifecycle management in one Java application. The most important engineering lessons were separating runtime responsibilities, validating dynamic configuration carefully, and treating shutdown paths as part of the core design rather than as an afterthought.
+
+---
+
 ## Runtime Notes
 
 - The application keeps one active graph per running process.
@@ -323,3 +408,9 @@ RESULT: PASSED 53 / 53 checks.
 ## Credits
 
 Developed by Avi Sinai as an advanced Java computational graph project.
+
+---
+
+## License
+
+This project is released under the [MIT License](LICENSE).
