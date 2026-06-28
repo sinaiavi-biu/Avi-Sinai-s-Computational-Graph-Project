@@ -35,12 +35,6 @@ Built with Java 21, sockets, threads, reflection, HTML, CSS, JavaScript, and gen
 
 ---
 
-## Demo
-
-Screenshots and a demo GIF can be added under `docs/images`. A good demo flow is: open `http://localhost:8080/app/index.html`, deploy `config_files/two_stage_pipeline.conf`, publish `A=4` and `B=6`, then show `C=10.0` and `D=11.0` in both the topic table and graph edge labels.
-
----
-
 ## Architecture
 
 ```mermaid
@@ -133,7 +127,6 @@ assignment6-project/
   README.md                  # Human-facing project overview
   docs/
     diagrams/                # Editable Mermaid architecture diagrams
-    images/                  # Placeholder location for screenshots/GIFs
   config_files/
     README.md                # Fixture descriptions
     *.conf                   # Valid and invalid sample graph configs
@@ -148,7 +141,7 @@ assignment6-project/
     graph/                   # Message, topic, agent, graph, and concurrency model
     server/                  # Custom HTTP server and request parser
     servlets/                # Route handlers for UI, config, graph, and topics
-    tests/                   # Visible edge-case integration test
+    tests/                   # Integration and edge-case tests
     views/                   # HTML/SVG graph rendering
 ```
 
@@ -302,47 +295,15 @@ RESULT: PASSED 53 / 53 checks.
 
 ---
 
-## Screenshots To Add
+## Runtime Notes
 
-- `docs/images/main-ui.png`: empty console after first load.
-- `docs/images/graph-example.png`: `two_stage_pipeline.conf` deployed.
-- `docs/images/boolean-demo.png`: `boolean_gates.conf` deployed.
-- `docs/images/topic-table.png`: topic values after publishing.
-- `docs/images/config-editor.png`: inline config editor and prebuilt agent builder.
-- `docs/images/demo.gif`: short end-to-end interaction.
-
----
-
-## Known Limitations
-
-- The HTTP implementation is educational and intentionally minimal.
-- Request bodies are currently parsed through character streams, which is not robust for arbitrary binary multipart uploads.
-- The graph is global process state; there are no isolated user sessions.
-- Cyclic graphs are detected for visualization but not guarded during execution.
-- Publish completion uses a short sleep rather than deterministic worker acknowledgements.
-- Closing a `ParallelAgent` now clears queued callbacks to guarantee bounded shutdown, so callbacks accepted before close are not guaranteed to run during shutdown.
-- Dynamic config editing is text-based under the hood, so validation is intentionally conservative.
-- There is no authentication, persistence layer, TLS, or production logging.
-
----
-
-## Future Work
-
-- WebSocket or server-sent-event live updates.
-- JSON REST API for configs, topics, graph structure, and metrics.
-- Graph persistence with named saved configurations.
-- User authentication and per-session graph isolation.
-- Plugin marketplace or registry for loadable agents.
-- Performance dashboard with request counts, active threads, queue sizes, and publish latency.
-- Graph search, filtering, and node highlighting.
-- SVG/PNG graph export.
-- Config validation page with cycle warnings and duplicate-output diagnostics.
-- Deterministic publish completion without sleeps.
-- Structured HTTP response and multipart parsing helpers.
-- Concurrency stress tests.
+- The application keeps one active graph per running process.
+- The custom HTTP server is intentionally small and dependency-free.
+- Cyclic graphs are rendered clearly, but publishing into a cycle can keep triggering agents.
+- During shutdown, `ParallelAgent` may discard queued callbacks so the process can close promptly.
 
 ---
 
 ## Credits
 
-Developed as an advanced Java assignment project and extended with runtime editing, richer visualization, additional agent families, validation, and browser-console features.
+Developed by Avi Sinai as an advanced Java computational graph project.

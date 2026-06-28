@@ -283,6 +283,8 @@ public class ConfLoader implements Servlet {
 
         for (Block block : blocks(content)) {
             String agentName = agentName(block);
+            // An edge into an agent means adding a subscriber topic to that
+            // agent block. Only variable-input agents can accept new inputs.
             if (cleanTo.equals(agentName)) {
                 if (!allowsAdditionalInput(block.className)) {
                     throw new IllegalArgumentException("Agent does not support extra input edges: " + cleanTo);
@@ -293,6 +295,8 @@ public class ConfLoader implements Servlet {
                 block.subs = appendName(block.subs, cleanFrom);
                 added = true;
             }
+            // An edge out of an agent means adding a publisher topic to the
+            // block. GenericConfig later validates that the topic has one owner.
             if (cleanFrom.equals(agentName)) {
                 if (containsName(block.pubs, cleanTo)) {
                     throw new IllegalArgumentException("Edge already exists: " + cleanFrom + " -> " + cleanTo);

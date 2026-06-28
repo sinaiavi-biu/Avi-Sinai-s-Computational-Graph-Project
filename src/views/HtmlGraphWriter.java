@@ -45,6 +45,8 @@ public class HtmlGraphWriter {
             return "<p>No graph loaded.</p>";
         }
 
+        // Acyclic graphs read best as left-to-right pipelines; cycles need a
+        // circular layout so feedback edges do not fold back over every node.
         Layout layout = graph.hasCycles() ? circularLayout(graph) : rankedLayout(graph);
         Map<Node, NodeBox> boxes = nodeBoxes(graph);
         StringBuilder svg = new StringBuilder();

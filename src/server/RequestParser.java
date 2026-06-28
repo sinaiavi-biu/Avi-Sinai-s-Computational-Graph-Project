@@ -67,6 +67,8 @@ public class RequestParser {
         if (contentLength == 0) {
             return new byte[0];
         }
+        // The project sends form and multipart bodies as UTF-8 text, so the
+        // parser keeps the simple reader-based contract used by the server.
         char[] body = new char[contentLength];
         int offset = 0;
         while (offset < contentLength) {
