@@ -20,6 +20,8 @@ The browser console exposes the full workflow: deploy a configuration, publish v
 
 [Watch the demo video](docs/images/demo.mp4)
 
+[Open the demo slide deck](docs/demo-slides.html)
+
 ![Main UI](docs/images/main-ui.png)
 
 ![Uploaded math graph](docs/images/math-graph.png)

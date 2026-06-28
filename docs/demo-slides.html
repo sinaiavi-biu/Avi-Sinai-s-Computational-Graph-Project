@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avi Sinai's Computational Graph Project - Demo Slides</title>
+    <style>
+        :root {
+            --bg: #eef3f7;
+            --panel: #ffffff;
+            --text: #172033;
+            --muted: #66758a;
+            --line: #cfd6e3;
+            --teal: #0f766e;
+            --blue: #2563eb;
+            --amber: #d97706;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: var(--text);
+            background:
+                linear-gradient(135deg, rgba(15, 118, 110, 0.10), rgba(37, 99, 235, 0.06) 42%, rgba(217, 119, 6, 0.12)),
+                linear-gradient(90deg, rgba(23, 32, 51, 0.05) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(23, 32, 51, 0.05) 1px, transparent 1px),
+                var(--bg);
+            background-size: auto, 44px 44px, 44px 44px, auto;
+            overflow: hidden;
+        }
+
+        .deck {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            padding: 54px 70px 44px;
+        }
+
+        .slide.active {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 26px;
+        }
+
+        .eyebrow {
+            color: var(--teal);
+            font-size: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        h1,
+        h2 {
+            margin: 0;
+            letter-spacing: 0;
+        }
+
+        h1 {
+            max-width: 980px;
+            font-size: 58px;
+            line-height: 1.04;
+        }
+
+        h2 {
+            font-size: 42px;
+        }
+
+        p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 23px;
+            line-height: 1.5;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 26px;
+            font-size: 24px;
+            line-height: 1.65;
+        }
+
+        li::marker {
+            color: var(--teal);
+        }
+
+        .hero {
+            align-content: center;
+            max-width: 1120px;
+        }
+
+        .hero p {
+            margin-top: 24px;
+            max-width: 940px;
+            font-size: 26px;
+        }
+
+        .meta {
+            display: grid;
+            grid-template-columns: repeat(3, max-content);
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .pill {
+            padding: 9px 13px;
+            border: 1px solid rgba(15, 118, 110, 0.24);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.72);
+            color: #0b5f59;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            align-items: center;
+        }
+
+        .card {
+            padding: 26px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: 0 18px 34px rgba(23, 32, 51, 0.13);
+        }
+
+        .image {
+            width: 100%;
+            max-height: 470px;
+            object-fit: contain;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 18px 34px rgba(23, 32, 51, 0.16);
+        }
+
+        .diagram {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            align-items: center;
+        }
+
+        .box {
+            min-height: 118px;
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-top: 5px solid var(--teal);
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 12px 24px rgba(23, 32, 51, 0.10);
+        }
+
+        .box strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 20px;
+        }
+
+        .box span {
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.35;
+        }
+
+        .arrow {
+            color: var(--teal);
+            font-size: 30px;
+            font-weight: 900;
+            text-align: center;
+        }
+
+        .steps {
+            counter-reset: step;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .steps li {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 12px;
+        }
+
+        .steps li::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 4px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--teal);
+            color: white;
+            font-size: 17px;
+            font-weight: 800;
+            display: grid;
+            place-items: center;
+        }
+
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--muted);
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .progress {
+            color: var(--teal);
+        }
+
+        kbd {
+            padding: 2px 7px;
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            background: white;
+            color: var(--text);
+            font-size: 13px;
+        }
+
+        @media print {
+            body {
+                overflow: visible;
+                background: white;
+            }
+
+            .deck {
+                height: auto;
+            }
+
+            .slide,
+            .slide.active {
+                display: grid;
+                width: 100vw;
+                height: 100vh;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="deck">
+        <section class="slide active">
+            <div class="hero">
+                <div class="eyebrow">Final Project Demo</div>
+                <h1>Avi Sinai's Computational Graph Project</h1>
+                <p>A plain-Java runtime console for deploying, editing, running, and visualizing topic-based computational graphs.</p>
+                <div class="meta">
+                    <div class="pill">Course: Advanced Programming</div>
+                    <div class="pill">Presenter: Avi Sinai</div>
+                    <div class="pill">Java 21</div>
+                </div>
+            </div>
+            <div></div>
+            <div class="footer"><span>Opening slide</span><span class="progress">1 / 7</span></div>
+        </section>
+
+        <section class="slide">
+            <div>
+                <div class="eyebrow">Background</div>
+                <h2>From One Calculation To A Live Runtime Graph</h2>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <ul>
+                        <li>Topics carry messages and remember their latest value.</li>
+                        <li>Agents subscribe to input topics and publish computed outputs.</li>
+                        <li>Config files describe the graph without recompiling code.</li>
+                        <li>The browser shows value flow through the graph as it runs.</li>
+                    </ul>
+                </div>
+                <img class="image" src="images/main-ui.png" alt="Main browser UI">
+            </div>
+            <div class="footer"><span>Story and motivation</span><span class="progress">2 / 7</span></div>
+        </section>
+
+        <section class="slide">
+            <div>
+                <div class="eyebrow">Design</div>
+                <h2>Core Architecture</h2>
+            </div>
+            <div class="card">
+                <div class="diagram">
+                    <div class="box"><strong>Browser UI</strong><span>Upload, edit, publish, inspect</span></div>
+                    <div class="arrow">→</div>
+                    <div class="box"><strong>HTTP Server</strong><span>Socket accept loop, routing, parser</span></div>
+                    <div class="arrow">→</div>
+                    <div class="box"><strong>Servlets</strong><span>Config, graph, topics, static HTML</span></div>
+                </div>
+                <div style="height: 22px;"></div>
+                <div class="diagram">
+                    <div class="box"><strong>GenericConfig</strong><span>Reflection-based agent loading</span></div>
+                    <div class="arrow">→</div>
+                    <div class="box"><strong>Topics</strong><span>Publish-subscribe message flow</span></div>
+                    <div class="arrow">→</div>
+                    <div class="box"><strong>ParallelAgent</strong><span>Worker thread per deployed agent</span></div>
+                </div>
+            </div>
+            <div class="footer"><span>Design slide</span><span class="progress">3 / 7</span></div>
+        </section>
+
+        <section class="slide">
+            <div>
+                <div class="eyebrow">Live Demo Script</div>
+                <h2>Main Flow To Record</h2>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <ol class="steps">
+                        <li>Open <strong>http://localhost:8080/app/index.html</strong>.</li>
+                        <li>Deploy <strong>two_stage_pipeline.conf</strong>.</li>
+                        <li>Publish <strong>A = 4</strong> and <strong>B = 6</strong>.</li>
+                        <li>Show <strong>C = 10.0</strong> and <strong>D = 11.0</strong>.</li>
+                        <li>Reset, then deploy <strong>boolean_gates.conf</strong>.</li>
+                        <li>Publish Boolean inputs and show non-math processing.</li>
+                    </ol>
+                </div>
+                <img class="image" src="images/math-graph.png" alt="Uploaded math graph">
+            </div>
+            <div class="footer"><span>Feature demo, target 2 minutes</span><span class="progress">4 / 7</span></div>
+        </section>
+
+        <section class="slide">
+            <div>
+                <div class="eyebrow">Assignment 6 Focus</div>
+                <h2>Browser Console Features</h2>
+            </div>
+            <div class="grid">
+                <img class="image" src="images/config-editor.png" alt="Config and edit panel">
+                <div class="card">
+                    <ul>
+                        <li>Upload or write config text directly in the browser.</li>
+                        <li>Add prebuilt math and Boolean agents.</li>
+                        <li>Add and remove legal graph edges.</li>
+                        <li>Reset active graph state with one action.</li>
+                        <li>Publish only to source topics to protect computed values.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer"><span>Assignment 6 feature emphasis</span><span class="progress">5 / 7</span></div>
+        </section>
+
+        <section class="slide">
+            <div>
+                <div class="eyebrow">Beyond The Minimum</div>
+                <h2>Extra Engineering Work</h2>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <ul>
+                        <li>Boolean gate family with gate-shaped SVG nodes.</li>
+                        <li>Variable-input and multi-output agents.</li>
+                        <li>Duplicate publisher validation and friendly errors.</li>
+                        <li>Cycle-aware graph layout for complex graphs.</li>
+                        <li>Bounded shutdown for full `ParallelAgent` queues.</li>
+                        <li>Generated Javadoc for the reusable HTTP server API.</li>
+                    </ul>
+                </div>
+                <img class="image" src="images/boolean-graph.png" alt="Boolean graph">
+            </div>
+            <div class="footer"><span>Extra work and complex graph demo</span><span class="progress">6 / 7</span></div>
+        </section>
+
+        <section class="slide">
+            <div>
+                <div class="eyebrow">Summary</div>
+                <h2>What I Learned And Will Take Forward</h2>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <ul>
+                        <li>How HTTP works under a framework: sockets, parsing, routing, responses.</li>
+                        <li>How to model a runtime system with small interfaces and clear ownership.</li>
+                        <li>How reflection can make a plugin-like configuration flow.</li>
+                        <li>Why concurrency lifecycle and shutdown paths matter.</li>
+                        <li>How backend state can become a useful visual tool.</li>
+                    </ul>
+                </div>
+                <img class="image" src="images/topic-table.png" alt="Topic table after publishing values">
+            </div>
+            <div class="footer">
+                <span>Use <kbd>←</kbd> and <kbd>→</kbd> to navigate</span>
+                <span class="progress">7 / 7</span>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const slides = Array.from(document.querySelectorAll('.slide'));
+        let index = 0;
+
+        function show(nextIndex) {
+            index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+            slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+        }
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') {
+                show(index + 1);
+            }
+            if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+                show(index - 1);
+            }
+        });
+    </script>
+</body>
+</html>
