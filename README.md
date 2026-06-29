@@ -18,7 +18,9 @@ The browser console exposes the full workflow: deploy a configuration, publish v
 
 ## Demo
 
-[Watch the demo video](docs/images/demo.mp4)
+[Watch the short demo video](docs/images/demo.mp4)
+
+[Watch the project walkthrough: slides and extended demo](docs/images/project-walkthrough.mp4)
 
 [Open the demo slide deck](docs/demo-slides.html)
 
