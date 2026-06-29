@@ -24,6 +24,8 @@ The browser console exposes the full workflow: deploy a configuration, publish v
 
 [Open the demo slide deck](docs/demo-slides.html)
 
+Note: GitHub may not preview the MP4 videos or the HTML slide deck directly in the repository view. If the preview does not open, download the file or clone the repository and open it locally.
+
 ![Main UI](docs/images/main-ui.png)
 
 ![Uploaded math graph](docs/images/math-graph.png)
