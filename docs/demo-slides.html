@@ -22,15 +22,30 @@
 
         body {
             margin: 0;
-            font-family: "Segoe UI", Arial, sans-serif;
+            font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
             color: var(--text);
             background:
-                linear-gradient(135deg, rgba(15, 118, 110, 0.10), rgba(37, 99, 235, 0.06) 42%, rgba(217, 119, 6, 0.12)),
+                linear-gradient(135deg, rgba(15, 118, 110, 0.18), rgba(37, 99, 235, 0.08) 38%, rgba(217, 119, 6, 0.16)),
+                linear-gradient(120deg, rgba(255, 255, 255, 0.78) 0 34%, transparent 34% 100%),
+                repeating-linear-gradient(135deg, rgba(23, 32, 51, 0.035) 0 1px, transparent 1px 18px),
                 linear-gradient(90deg, rgba(23, 32, 51, 0.05) 1px, transparent 1px),
                 linear-gradient(0deg, rgba(23, 32, 51, 0.05) 1px, transparent 1px),
                 var(--bg);
-            background-size: auto, 44px 44px, 44px 44px, auto;
+            background-size: auto, auto, auto, 44px 44px, 44px 44px, auto;
             overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(90deg, transparent 0 8%, rgba(15, 118, 110, 0.18) 8% 8.25%, transparent 8.25% 100%),
+                linear-gradient(90deg, transparent 0 72%, rgba(37, 99, 235, 0.14) 72% 72.2%, transparent 72.2% 100%),
+                linear-gradient(0deg, transparent 0 22%, rgba(217, 119, 6, 0.15) 22% 22.25%, transparent 22.25% 100%),
+                linear-gradient(0deg, transparent 0 76%, rgba(15, 118, 110, 0.13) 76% 76.2%, transparent 76.2% 100%);
+            opacity: 0.82;
         }
 
         .deck {
@@ -64,6 +79,7 @@
         h2 {
             margin: 0;
             letter-spacing: 0;
+            font-family: Georgia, "Trebuchet MS", serif;
         }
 
         h1 {
@@ -133,8 +149,16 @@
             padding: 26px;
             border: 1px solid var(--line);
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.86);
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 251, 252, 0.88)),
+                rgba(255, 255, 255, 0.9);
             box-shadow: 0 18px 34px rgba(23, 32, 51, 0.13);
+        }
+
+        .card,
+        .box,
+        .pill {
+            font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
         }
 
         .image {
@@ -174,6 +198,18 @@
             color: var(--muted);
             font-size: 15px;
             line-height: 1.35;
+        }
+
+        .spotlight {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .spotlight .box {
+            min-height: 96px;
+            border-top-color: var(--amber);
         }
 
         .arrow {
@@ -264,7 +300,7 @@
                 <div class="meta">
                     <div class="pill">Course: Advanced Programming</div>
                     <div class="pill">Presenter: Avi Sinai</div>
-                    <div class="pill">Java 21</div>
+                    <div class="pill">ID: 209191584</div>
                 </div>
             </div>
             <div></div>
@@ -274,16 +310,21 @@
         <section class="slide">
             <div>
                 <div class="eyebrow">Background</div>
-                <h2>From One Calculation To A Live Runtime Graph</h2>
+                <h2>From Static Calculations To A Runtime System</h2>
             </div>
             <div class="grid">
                 <div class="card">
                     <ul>
-                        <li>Topics carry messages and remember their latest value.</li>
-                        <li>Agents subscribe to input topics and publish computed outputs.</li>
-                        <li>Config files describe the graph without recompiling code.</li>
-                        <li>The browser shows value flow through the graph as it runs.</li>
+                        <li>The project turns a calculation into a living network of topics and agents.</li>
+                        <li>Values move through the graph as messages, not as one hardcoded formula.</li>
+                        <li>Changing the config changes runtime behavior without recompiling.</li>
+                        <li>The browser becomes a control room: deploy, publish, edit, inspect, reset.</li>
                     </ul>
+                    <div class="spotlight">
+                        <div class="box"><strong>Problem</strong><span>Hardcoded computation is difficult to inspect and change.</span></div>
+                        <div class="box"><strong>Idea</strong><span>Represent computation as a configurable message graph.</span></div>
+                        <div class="box"><strong>Result</strong><span>A live console that shows values flowing through the graph.</span></div>
+                    </div>
                 </div>
                 <img class="image" src="images/main-ui.png" alt="Main browser UI">
             </div>
@@ -293,23 +334,28 @@
         <section class="slide">
             <div>
                 <div class="eyebrow">Design</div>
-                <h2>Core Architecture</h2>
+                <h2>Design: Small Components, Clear Ownership</h2>
             </div>
             <div class="card">
                 <div class="diagram">
                     <div class="box"><strong>Browser UI</strong><span>Upload, edit, publish, inspect</span></div>
-                    <div class="arrow">→</div>
-                    <div class="box"><strong>HTTP Server</strong><span>Socket accept loop, routing, parser</span></div>
-                    <div class="arrow">→</div>
-                    <div class="box"><strong>Servlets</strong><span>Config, graph, topics, static HTML</span></div>
+                    <div class="arrow">&rarr;</div>
+                    <div class="box"><strong>HTTP Server</strong><span>Socket accept loop, request pool, longest-prefix routing</span></div>
+                    <div class="arrow">&rarr;</div>
+                    <div class="box"><strong>Servlets</strong><span>Small route handlers for config, graph, topics, and static HTML</span></div>
                 </div>
                 <div style="height: 22px;"></div>
                 <div class="diagram">
-                    <div class="box"><strong>GenericConfig</strong><span>Reflection-based agent loading</span></div>
-                    <div class="arrow">→</div>
-                    <div class="box"><strong>Topics</strong><span>Publish-subscribe message flow</span></div>
-                    <div class="arrow">→</div>
-                    <div class="box"><strong>ParallelAgent</strong><span>Worker thread per deployed agent</span></div>
+                    <div class="box"><strong>GenericConfig</strong><span>Reads three-line blocks and loads agents by reflection</span></div>
+                    <div class="arrow">&rarr;</div>
+                    <div class="box"><strong>Topic Graph</strong><span>Topics keep latest messages, publishers, and subscribers</span></div>
+                    <div class="arrow">&rarr;</div>
+                    <div class="box"><strong>ParallelAgent</strong><span>Serializes callbacks on a worker thread and owns shutdown</span></div>
+                </div>
+                <div class="spotlight">
+                    <div class="box"><strong>SOLID</strong><span>Server, parser, servlets, config, graph, and view each have one job.</span></div>
+                    <div class="box"><strong>Reusable API</strong><span>The HTTP server API is documented with Javadocs for other developers.</span></div>
+                    <div class="box"><strong>Lifecycle</strong><span>Config replacement, reset, and close paths release registered resources.</span></div>
                 </div>
             </div>
             <div class="footer"><span>Design slide</span><span class="progress">3 / 7</span></div>
@@ -364,13 +410,18 @@
             <div class="grid">
                 <div class="card">
                     <ul>
-                        <li>Boolean gate family with gate-shaped SVG nodes.</li>
-                        <li>Variable-input and multi-output agents.</li>
-                        <li>Duplicate publisher validation and friendly errors.</li>
-                        <li>Cycle-aware graph layout for complex graphs.</li>
-                        <li>Bounded shutdown for full `ParallelAgent` queues.</li>
-                        <li>Generated Javadoc for the reusable HTTP server API.</li>
+                        <li>Non-math processing with Boolean gates and majority logic.</li>
+                        <li>Gate-shaped SVG nodes instead of generic agent bubbles.</li>
+                        <li>Variable-input and multi-output agents for larger graphs.</li>
+                        <li>Legal edge editing with duplicate publisher protection.</li>
+                        <li>Cycle-aware layout for feedback graphs.</li>
+                        <li>Bounded `ParallelAgent` shutdown under full queues.</li>
                     </ul>
+                    <div class="spotlight">
+                        <div class="box"><strong>Validation</strong><span>Bad configs fail with readable messages.</span></div>
+                        <div class="box"><strong>UX</strong><span>Reset, publish forms, and branded graph views make the system usable.</span></div>
+                        <div class="box"><strong>Docs</strong><span>README, diagrams, scripts, license, and API docs are included.</span></div>
+                    </div>
                 </div>
                 <img class="image" src="images/boolean-graph.png" alt="Boolean graph">
             </div>
@@ -395,7 +446,7 @@
                 <img class="image" src="images/topic-table.png" alt="Topic table after publishing values">
             </div>
             <div class="footer">
-                <span>Use <kbd>←</kbd> and <kbd>→</kbd> to navigate</span>
+                <span>Use <kbd>&larr;</kbd> and <kbd>&rarr;</kbd> to navigate</span>
                 <span class="progress">7 / 7</span>
             </div>
         </section>
